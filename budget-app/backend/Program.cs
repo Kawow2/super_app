@@ -30,6 +30,7 @@ using (var scope = app.Services.CreateScope())
         {
             db.Database.EnsureCreated();
             Seed.Run(db);
+            HousingSchema.EnsureTables(db);
             Console.WriteLine("Base de données prête.");
             break;
         }

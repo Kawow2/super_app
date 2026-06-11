@@ -12,8 +12,8 @@ import { SettingsService } from './core/services';
       <nav class="sidebar">
         <div class="brand">Mes Apps</div>
         <a routerLink="/budget" routerLinkActive="active"><span class="icon">💰</span>Budget</a>
+        <a routerLink="/immobilier" routerLinkActive="active"><span class="icon">🏠</span>Immobilier</a>
         <a routerLink="/recettes" routerLinkActive="active"><span class="icon">🍳</span>Recettes</a>
-        <a routerLink="/maison" routerLinkActive="active"><span class="icon">🏠</span>Maison</a>
       </nav>
       <router-outlet />
     </div>
