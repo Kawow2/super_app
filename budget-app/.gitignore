@@ -1,0 +1,58 @@
+# ============================================================
+#  Mon Budget — .gitignore
+# ============================================================
+
+# ---------- .NET / Backend ----------
+backend/bin/
+backend/obj/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userprefs
+project.lock.json
+artifacts/
+
+# Secrets / config locale ASP.NET
+**/appsettings.Development.json
+**/appsettings.*.local.json
+secrets.json
+
+# ---------- Angular / Frontend ----------
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/tmp/
+frontend/out-tsc/
+frontend/.npm/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---------- Docker ----------
+# (les images/volumes ne sont pas dans le dépôt, mais on ignore les overrides locaux)
+docker-compose.override.yml
+
+# ---------- Bases de données / dumps ----------
+*.mdf
+*.ldf
+*.bak
+
+# Exports de l'application (sauvegardes JSON générées par l'utilisateur)
+budget-export-*.json
+
+# ---------- Logs ----------
+*.log
+build-log.txt
+
+# ---------- IDE / Éditeurs ----------
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini

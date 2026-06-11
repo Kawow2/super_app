@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: budget-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Budget@pp2026!"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - budget-db-data:/var/opt/mssql
+
+  api:
+    build: ./backend
+    container_name: budget-api
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__Default: "Server=db,1433;Database=BudgetDb;User Id=sa;Password=Budget@pp2026!;TrustServerCertificate=True;Encrypt=False"
+    ports:
+      - "5000:8080"
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    container_name: budget-web
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+
+volumes:
+  budget-db-data:
