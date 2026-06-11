@@ -1,12 +1,17 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SettingsService } from '../core/services';
+import { ButtonModule } from 'primeng/button';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
+import { MessageModule } from 'primeng/message';
+import { SettingsService } from '../../core/services';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonModule, ColorPickerModule, FileUploadModule, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Paramètres</h1>
 
@@ -25,7 +30,7 @@ import { SettingsService } from '../core/services';
         </div>
         <div>
           <label>Personnalisée</label>
-          <input type="color" [ngModel]="settings.themeColor()" (ngModelChange)="apply($event)" />
+          <p-colorpicker [ngModel]="settings.themeColor()" (ngModelChange)="apply($event)" />
         </div>
       </div>
     </div>
@@ -36,9 +41,7 @@ import { SettingsService } from '../core/services';
         Téléchargez un fichier JSON contenant l'intégralité de vos données
         (comptes, transactions, catégories, abonnements, paramètres) pour changer de PC ou faire une sauvegarde.
       </p>
-      <a class="btn primary" href="/api/export" download style="text-decoration: none; display: inline-block;">
-        Exporter toutes les données
-      </a>
+      <a pButton href="/api/export" download>Exporter toutes les données</a>
     </div>
 
     <div class="card">
@@ -48,12 +51,14 @@ import { SettingsService } from '../core/services';
         <strong>Attention : cela remplace TOUTES les données actuelles.</strong>
       </p>
       @if (restoreMessage()) {
-        <div class="success">{{ restoreMessage() }}</div>
+        <p-message severity="success" styleClass="block-message">{{ restoreMessage() }}</p-message>
       }
       @if (restoreError()) {
-        <div class="error">{{ restoreError() }}</div>
+        <p-message severity="error" styleClass="block-message">{{ restoreError() }}</p-message>
       }
-      <input type="file" accept=".json" (change)="restore($event)" />
+      <p-fileupload #uploader mode="basic" accept=".json" [auto]="true" [customUpload]="true"
+                    chooseLabel="Choisir un fichier d'export..." chooseIcon="pi pi-upload"
+                    (uploadHandler)="restore($event); uploader.clear()" />
     </div>
   `,
 })
@@ -69,14 +74,12 @@ export class SettingsComponent {
   readonly restoreError = signal('');
 
   apply(color: string) {
-    this.settings.saveThemeColor(color);
+    this.settings.saveThemeColor(color.startsWith('#') ? color : `#${color}`);
   }
 
-  restore(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+  restore(event: FileUploadHandlerEvent) {
+    const file = event.files[0];
     if (!file) return;
-    input.value = '';
 
     if (!confirm('Restaurer cette sauvegarde ? Toutes les données actuelles seront REMPLACÉES.')) return;
 

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SettingsService } from './core/services';
 
@@ -6,21 +6,16 @@ import { SettingsService } from './core/services';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="shell">
       <nav class="sidebar">
-        <div class="brand">Mon Budget</div>
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Tableau de bord</a>
-        <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
-        <a routerLink="/import" routerLinkActive="active">Importer</a>
-        <a routerLink="/categories" routerLinkActive="active">Catégories</a>
-        <a routerLink="/abonnements" routerLinkActive="active">Abonnements</a>
-        <a routerLink="/comptes" routerLinkActive="active">Comptes</a>
-        <a routerLink="/parametres" routerLinkActive="active">Paramètres</a>
+        <div class="brand">Mes Apps</div>
+        <a routerLink="/budget" routerLinkActive="active"><span class="icon">💰</span>Budget</a>
+        <a routerLink="/recettes" routerLinkActive="active"><span class="icon">🍳</span>Recettes</a>
+        <a routerLink="/maison" routerLinkActive="active"><span class="icon">🏠</span>Maison</a>
       </nav>
-      <main class="content">
-        <router-outlet />
-      </main>
+      <router-outlet />
     </div>
   `,
 })

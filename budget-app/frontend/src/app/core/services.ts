@@ -1,5 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { palette, updatePrimaryPalette } from '@primeng/themes';
 import { Observable } from 'rxjs';
 import {
   Account, Category, CategoryPoint, ImportResult, MonthlyPoint,
@@ -18,9 +19,12 @@ export class SettingsService {
   readonly loaded = signal(false);
 
   constructor() {
-    // Applique la couleur d'accent au document dès qu'elle change.
+    // Applique la couleur d'accent au document (CSS custom) et à la palette
+    // primaire PrimeNG dès qu'elle change.
     effect(() => {
-      document.documentElement.style.setProperty('--accent', this.themeColor());
+      const color = this.themeColor();
+      document.documentElement.style.setProperty('--accent', color);
+      updatePrimaryPalette(palette(color));
     });
 
     this.http.get<Record<string, string>>(`${API}/settings`).subscribe({

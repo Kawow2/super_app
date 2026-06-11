@@ -1,17 +1,19 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
 import { ChartConfiguration } from 'chart.js';
-import { AccountsService, AnalyticsService, SettingsService } from '../core/services';
-import { CategoryPoint, MonthlyPoint, YearlyPoint } from '../core/models';
-import { ChartComponent } from '../shared/chart.component';
+import { AccountsService, AnalyticsService, SettingsService } from '../../core/services';
+import { CategoryPoint, MonthlyPoint, YearlyPoint } from '../../core/models';
+import { ChartComponent } from '../../shared/chart.component';
 
 const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChartComponent],
+  imports: [CommonModule, FormsModule, SelectModule, ChartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Tableau de bord</h1>
 
@@ -33,20 +35,12 @@ const MONTH_LABELS = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août
     <div class="toolbar">
       <div>
         <label>Compte</label>
-        <select [ngModel]="accountId()" (ngModelChange)="accountId.set($event)">
-          <option value="">Tous les comptes</option>
-          @for (account of accountsService.accounts(); track account.id) {
-            <option [value]="account.id">{{ account.name }}</option>
-          }
-        </select>
+        <p-select [options]="accountOptions()" optionLabel="name" optionValue="id"
+                  [ngModel]="accountId()" (ngModelChange)="accountId.set($event)" />
       </div>
       <div>
         <label>Année</label>
-        <select [ngModel]="year()" (ngModelChange)="year.set(+$event)">
-          @for (y of years; track y) {
-            <option [value]="y">{{ y }}</option>
-          }
-        </select>
+        <p-select [options]="years" [ngModel]="year()" (ngModelChange)="year.set($event)" />
       </div>
     </div>
 
@@ -90,6 +84,11 @@ export class DashboardComponent {
 
   readonly totalBalance = computed(() =>
     this.accountsService.accounts().reduce((sum, a) => sum + a.balance, 0));
+
+  readonly accountOptions = computed(() => [
+    { id: '', name: 'Tous les comptes' },
+    ...this.accountsService.accounts().map((a) => ({ id: a.id, name: a.name })),
+  ]);
 
   constructor() {
     this.accountsService.refresh();

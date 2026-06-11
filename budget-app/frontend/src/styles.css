@@ -1,6 +1,8 @@
 /* ============================================================
-   Mon Budget — thème clair, une couleur d'accent personnalisable
+   Mes Apps — thème clair, une couleur d'accent personnalisable
    ============================================================ */
+
+@import "primeicons/primeicons.css";
 
 :root {
   --accent: #4f46e5;            /* modifiée dynamiquement par SettingsService */
@@ -75,12 +77,39 @@ h2 { font-size: 1.15rem; }
 }
 .sidebar a:hover { background: var(--bg); }
 .sidebar a.active { background: var(--accent-soft); color: var(--accent); }
+.sidebar a .icon { margin-right: 0.45rem; }
+
+/* Zone d'une app (à droite de la sidebar) : nav du haut + contenu en colonne. */
+.app-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-top-nav {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topnav .p-tablist { padding: 0 1.25rem; }
 
 .content {
   flex: 1;
   padding: 1.75rem 2rem 3rem;
   max-width: 1180px;
 }
+
+/* ---------- Placeholder « bientôt disponible » ---------- */
+
+.coming-soon {
+  display: block;
+  max-width: 480px;
+  margin: 3rem auto;
+  text-align: center;
+}
+.coming-soon-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
 
 /* ---------- Cartes / grilles ---------- */
 
@@ -124,39 +153,23 @@ th.amount { text-align: right; }
 .neg { color: var(--neg); }
 .pos { color: var(--pos); }
 
-/* ---------- Formulaires / boutons ---------- */
-
-input, select {
-  font: inherit;
-  color: inherit;
-  padding: 0.45rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  outline: none;
-}
-input:focus, select:focus { border-color: var(--accent); }
-input[type="color"] { padding: 0.1rem; width: 48px; height: 36px; cursor: pointer; }
-input[type="checkbox"] { width: auto; }
+/* ---------- Formulaires (composants PrimeNG) ---------- */
 
 label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
 
-.btn {
-  font: inherit;
-  font-weight: 600;
-  padding: 0.5rem 0.95rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-}
-.btn:hover { background: var(--bg); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover { filter: brightness(1.08); }
-.btn.danger { color: var(--neg); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn.small { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
+/* Les composants PrimeNG héritent de la police et de la taille de l'app. */
+.p-component { font-family: var(--font-body); font-size: inherit; }
+
+/* Largeurs des champs numériques / dates dans les toolbars et tableaux. */
+.amount-input { width: 130px; text-align: right; }
+.date-input .p-datepicker-input { width: 135px; }
+.day-input { width: 80px; }
+
+/* p-message utilisé comme bandeau de page. */
+.block-message { display: block; margin-bottom: 1rem; }
+
+/* Lien stylé en bouton (ex. export) : pas de soulignement. */
+a.p-button { text-decoration: none; }
 
 .toolbar {
   display: flex;
@@ -167,17 +180,6 @@ label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 
 }
 
 /* ---------- Badges ---------- */
-
-.badge {
-  display: inline-block;
-  padding: 0.12rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-.badge.new { background: var(--accent-soft); color: var(--accent); }
-.badge.dup { background: #fef2f2; color: var(--neg); }
-.badge.cat { background: var(--bg); color: var(--muted); }
 
 .dot {
   display: inline-block;
@@ -235,23 +237,6 @@ label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 
   text-align: center;
   padding: 2rem 1rem;
 }
-.error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: var(--neg);
-  border-radius: 8px;
-  padding: 0.6rem 0.9rem;
-  margin-bottom: 1rem;
-}
-.success {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: var(--pos);
-  border-radius: 8px;
-  padding: 0.6rem 0.9rem;
-  margin-bottom: 1rem;
-}
-
 .row { display: flex; gap: 0.7rem; align-items: end; flex-wrap: wrap; }
 .spacer { flex: 1; }
 
