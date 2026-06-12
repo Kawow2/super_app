@@ -11,8 +11,11 @@ Stack: Angular 19 (standalone components, signals) + PrimeNG + Chart.js frontend
 ## Commands
 
 ```bash
-# Full stack (web on :4200, api on :5000, db on :1433)
+# PROD stack (web :4200, api :5000, db :1433) — real user data, volume budget-db-data
 docker compose up --build -d
+
+# DEV stack (web :4201, api :5001, db :1434) — isolated volume budget-db-data-dev
+docker compose -f docker-compose.dev.yml up --build -d
 
 # Dev without Docker: start only the database, then run each app locally
 docker compose up -d db
@@ -22,11 +25,17 @@ cd frontend && npm start            # ng serve with proxy.conf.json routing /api
 # Builds
 cd backend && dotnet build
 cd frontend && npm run build        # ng build --configuration production
+
+# Prod database backup / restore (PowerShell, .bak files in ./backups)
+.\scripts\backup.ps1                                  # manual backup now
+.\scripts\restore.ps1 -File <name.bak> [-Env dev]     # restore (api stopped/restarted by the script)
 ```
 
 There are no tests and no linter configured in this repo.
 
-The SQL Server SA password (`Budget@pp2026!`) is defined in `docker-compose.yml` in **two places** (db service env var and api connection string) — change both or neither.
+The prod stack treats the local Docker volume as production data: never run `docker compose down -v` on the prod project, and prefer a backup (`scripts/backup.ps1`) before risky schema or data operations. The `db-backup` sidecar backs up daily into `./backups` (14-day retention on `BudgetDb_auto_*` files only).
+
+The SQL Server SA password (`Budget@pp2026!`) is duplicated across `docker-compose.yml` (db, db-backup, api), `docker-compose.dev.yml` (db, api), and both scripts in `scripts/` — keep them in sync.
 
 ## Database schema: EF migrations
 

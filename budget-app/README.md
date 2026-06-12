@@ -17,14 +17,43 @@ docker compose up --build -d
 Le premier démarrage prend quelques minutes (téléchargement de l'image SQL Server,
 build .NET et Angular). L'API patiente automatiquement le temps que SQL Server soit prêt.
 
-| Service | URL |
-|---|---|
-| Application web | http://localhost:4200 |
-| API | http://localhost:5000/api |
+## Environnements
 
-Les données sont persistées dans le volume Docker `budget-db-data` :
-elles survivent aux redémarrages (`docker compose down` ne les supprime pas,
-`docker compose down -v` oui).
+Deux stacks Docker totalement isolées (projets, volumes et ports distincts) :
+
+| | Prod (`docker-compose.yml`) | Dev (`docker-compose.dev.yml`) |
+|---|---|---|
+| Application web | http://localhost:4200 | http://localhost:4201 |
+| API | http://localhost:5000/api | http://localhost:5001/api |
+| SQL Server | `localhost,1433` | `localhost,1434` |
+| Volume de données | `budget-db-data` | `budget-db-data-dev` |
+| Démarrage | `docker compose up --build -d` | `docker compose -f docker-compose.dev.yml up --build -d` |
+
+La **prod** porte vos données réelles ; la **dev** démarre vide (schéma + données de
+départ) et sert à tester sans risque — on peut y restaurer une copie de la prod
+(voir Sauvegardes ci-dessous).
+
+Les données sont persistées dans les volumes Docker : elles survivent aux
+redémarrages (`docker compose down` ne les supprime pas, `docker compose down -v` oui).
+
+## Sauvegardes de la base de prod
+
+- **Automatique** : le conteneur `budget-db-backup` sauvegarde `BudgetDb` chaque jour
+  dans le dossier `./backups` (fichiers `BudgetDb_auto_*.bak`, rétention 14 jours —
+  seuls les backups automatiques sont purgés, jamais les manuels).
+- **Manuelle** (avant une opération risquée) :
+  ```powershell
+  .\scripts\backup.ps1                  # → backups\BudgetDb_manuel_<horodatage>.bak
+  ```
+- **Restauration** (remplace toutes les données de la base ciblée) :
+  ```powershell
+  .\scripts\restore.ps1 -File BudgetDb_auto_20260612_030000.bak           # prod (confirmation demandée)
+  .\scripts\restore.ps1 -File BudgetDb_manuel_20260612_180000.bak -Env dev  # copie de la prod vers la dev
+  ```
+  Le script arrête l'API le temps de la restauration puis la redémarre.
+
+Pensez à copier de temps en temps le dossier `backups/` sur un autre support
+(disque externe, cloud) : un backup sur la même machine ne protège pas d'une panne disque.
 
 ## Fonctionnalités
 
@@ -105,7 +134,10 @@ risque un relevé qui chevauche le précédent.
 
 ```
 budget-app/
-├── docker-compose.yml          # db (SQL Server) + api (.NET) + web (nginx)
+├── docker-compose.yml          # PROD : db (SQL Server) + db-backup + api (.NET) + web (nginx)
+├── docker-compose.dev.yml      # DEV : mêmes services, ports/volume séparés
+├── scripts/                    # backup.ps1, restore.ps1
+├── backups/                    # .bak quotidiens + manuels (hors git)
 ├── backend/                    # API ASP.NET Core 8
 │   ├── Controllers/            # Accounts, Transactions, Categories, Subscriptions,
 │   │                           # Analytics, Import, Export, Settings
@@ -124,9 +156,9 @@ budget-app/
 
 - **PDF** : heuristique générique en attendant votre template de relevé.
 - **Pas d'authentification** (choix assumé : usage local).
-- **Mot de passe SQL Server** : défini dans `docker-compose.yml`
-  (`Budget@pp2026!`). Si vous le changez, changez-le aux deux endroits
-  (variable `MSSQL_SA_PASSWORD` du service `db` **et** chaîne de connexion du service `api`).
+- **Mot de passe SQL Server** : `Budget@pp2026!`, défini à plusieurs endroits qui
+  doivent rester synchronisés : `docker-compose.yml` (services `db`, `db-backup` et `api`),
+  `docker-compose.dev.yml` (services `db` et `api`) et `scripts/backup.ps1` / `scripts/restore.ps1`.
 - Le schéma de base est géré par les **migrations EF Core** (`backend/Migrations/`),
   appliquées automatiquement au démarrage : les mises à jour de schéma se font donc
   **sans perte de données**. Les bases créées par d'anciennes versions (avant les

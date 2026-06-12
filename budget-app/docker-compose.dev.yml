@@ -1,0 +1,46 @@
+# Stack de DÉVELOPPEMENT : mêmes images que la prod, mais projet compose,
+# volume et ports séparés — rien de partagé avec la prod (sauf ./backups,
+# monté pour pouvoir y restaurer une copie de la prod : scripts/restore.ps1 -Env dev).
+#
+#   docker compose -f docker-compose.dev.yml up --build -d
+#
+# Web : http://localhost:4201 — API : http://localhost:5001/api — SQL : localhost,1434
+name: budget-dev
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: budget-db-dev
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Budget@pp2026!"
+      MSSQL_PID: "Express"
+    ports:
+      - "1434:1433"
+    volumes:
+      - budget-db-data-dev:/var/opt/mssql
+      - ./backups:/var/opt/mssql/backup
+
+  api:
+    build: ./backend
+    container_name: budget-api-dev
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=db,1433;Database=BudgetDb;User Id=sa;Password=Budget@pp2026!;TrustServerCertificate=True;Encrypt=False"
+    ports:
+      - "5001:8080"
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    container_name: budget-web-dev
+    depends_on:
+      - api
+    ports:
+      - "4201:80"
+    restart: unless-stopped
+
+volumes:
+  budget-db-data-dev:
