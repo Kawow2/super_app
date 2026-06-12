@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore;
 namespace BudgetApi.Data;
 
 /// <summary>
-/// Création idempotente des tables Immobilier.
-/// `EnsureCreated()` ne fait rien quand la base existe déjà : ces tables, ajoutées
-/// après coup, doivent donc être créées explicitement sur les installations existantes.
-/// Le schéma reproduit exactement ce que EnsureCreated génère sur une base neuve
-/// (conventions EF : DbSet → nom de table, Guid → uniqueidentifier, DateOnly → date,
-/// enum → int, decimal avec la précision configurée dans BudgetContext).
+/// Création idempotente des tables Immobilier, datant de l'époque EnsureCreated.
+/// Conservé uniquement pour le baseline (<see cref="MigrationBaseline"/>) des bases
+/// antérieures aux migrations EF. Ne plus ajouter de tables ici : utiliser
+/// `dotnet ef migrations add`.
 /// </summary>
 public static class HousingSchema
 {

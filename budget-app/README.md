@@ -127,6 +127,8 @@ budget-app/
 - **Mot de passe SQL Server** : défini dans `docker-compose.yml`
   (`Budget@pp2026!`). Si vous le changez, changez-le aux deux endroits
   (variable `MSSQL_SA_PASSWORD` du service `db` **et** chaîne de connexion du service `api`).
-- Le schéma de base est créé automatiquement au premier démarrage
-  (`EnsureCreated` + données de départ : 7 catégories françaises avec mots-clés et un
-  compte « Compte courant »).
+- Le schéma de base est géré par les **migrations EF Core** (`backend/Migrations/`),
+  appliquées automatiquement au démarrage : les mises à jour de schéma se font donc
+  **sans perte de données**. Les bases créées par d'anciennes versions (avant les
+  migrations) sont détectées et mises à niveau automatiquement. Données de départ :
+  7 catégories françaises avec mots-clés, un compte « Compte courant » et 6 repas.

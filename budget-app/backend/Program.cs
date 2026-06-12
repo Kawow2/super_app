@@ -28,10 +28,9 @@ using (var scope = app.Services.CreateScope())
     {
         try
         {
-            db.Database.EnsureCreated();
-            HousingSchema.EnsureTables(db);
-            RecettesSchema.EnsureTables(db);
-            // Seed en dernier : il insère dans des tables créées par les EnsureTables ci-dessus.
+            // Bases créées avant les migrations EF : enregistre InitialCreate comme déjà appliquée.
+            MigrationBaseline.StampIfLegacy(db);
+            db.Database.Migrate();
             Seed.Run(db);
             Console.WriteLine("Base de données prête.");
             break;

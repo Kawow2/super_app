@@ -28,9 +28,17 @@ There are no tests and no linter configured in this repo.
 
 The SQL Server SA password (`Budget@pp2026!`) is defined in `docker-compose.yml` in **two places** (db service env var and api connection string) — change both or neither.
 
-## Database schema: no EF migrations
+## Database schema: EF migrations
 
-The project deliberately does not use EF migrations. The schema is created by `Database.EnsureCreated()` on first startup (`backend/Program.cs`), which does **nothing** on existing databases. Tables added after the initial release must therefore also be created by an idempotent raw-SQL `EnsureTables` method in `backend/Data/` (see `HousingSchema.cs`, `RecettesSchema.cs` as templates: `IF OBJECT_ID(...) IS NULL CREATE TABLE ...`). The SQL must replicate exactly what EF conventions would generate (Guid → uniqueidentifier, DateOnly → date, enum → int, decimal precision as configured in `BudgetContext.OnModelCreating`). `Seed.Run` executes last because it inserts into tables created by the `EnsureTables` calls. When adding an entity: model in `Models/`, DbSet + configuration in `BudgetContext`, matching SQL in a schema file, and register the `EnsureTables` call in `Program.cs` before `Seed.Run`.
+The schema is managed by EF Core migrations (`backend/Migrations/`), applied automatically at startup by `Database.Migrate()` (`backend/Program.cs`). When adding or changing an entity: model in `Models/`, DbSet + configuration in `BudgetContext`, then generate the migration:
+
+```bash
+cd backend && dotnet ef migrations add <Name>   # applied automatically at next startup
+```
+
+Never edit the database schema by hand or via raw SQL — always go through a migration. `Seed.Run` executes after `Migrate()`.
+
+Legacy note: databases created before migrations existed (via `EnsureCreated()`) have no `__EFMigrationsHistory` table. `MigrationBaseline.StampIfLegacy` (`backend/Data/`) detects them at startup, brings them up to the initial schema via the idempotent `HousingSchema`/`RecettesSchema` SQL, and stamps `InitialCreate` as applied so `Migrate()` doesn't try to recreate existing tables. Those two schema files exist only for this baseline path — never add new tables to them.
 
 ## Architecture
 
