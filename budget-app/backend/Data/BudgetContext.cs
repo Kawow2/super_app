@@ -15,6 +15,11 @@ public class BudgetContext(DbContextOptions<BudgetContext> options) : DbContext(
     public DbSet<Loan> Loans => Set<Loan>();
     public DbSet<Prepayment> Prepayments => Set<Prepayment>();
     public DbSet<ScheduleEntry> ScheduleEntries => Set<ScheduleEntry>();
+    public DbSet<Meal> Meals => Set<Meal>();
+    public DbSet<Ingredient> Ingredients => Set<Ingredient>();
+    public DbSet<MealIngredient> MealIngredients => Set<MealIngredient>();
+    public DbSet<Planning> Plannings => Set<Planning>();
+    public DbSet<PlanningMeal> PlanningMeals => Set<PlanningMeal>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -89,5 +94,37 @@ public class BudgetContext(DbContextOptions<BudgetContext> options) : DbContext(
             .HasOne<Loan>().WithMany()
             .HasForeignKey(e => e.LoanId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // ----- Recettes -----
+
+        mb.Entity<Meal>().Property(m => m.Name).HasMaxLength(200);
+
+        mb.Entity<Ingredient>().Property(i => i.Name).HasMaxLength(200);
+        mb.Entity<Ingredient>().HasIndex(i => i.Name).IsUnique();
+
+        mb.Entity<MealIngredient>().Property(mi => mi.Quantity).HasPrecision(18, 2);
+        mb.Entity<MealIngredient>().Property(mi => mi.Unit).HasMaxLength(50);
+        mb.Entity<MealIngredient>().HasIndex(mi => new { mi.MealId, mi.IngredientId }).IsUnique();
+        mb.Entity<MealIngredient>()
+            .HasOne<Meal>().WithMany()
+            .HasForeignKey(mi => mi.MealId)
+            .OnDelete(DeleteBehavior.Cascade);
+        mb.Entity<MealIngredient>()
+            .HasOne<Ingredient>().WithMany()
+            .HasForeignKey(mi => mi.IngredientId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        mb.Entity<Planning>().HasIndex(p => p.WeekStart).IsUnique();
+
+        mb.Entity<PlanningMeal>().HasIndex(pm => new { pm.PlanningId, pm.DayOfWeek, pm.MealTime }).IsUnique();
+        mb.Entity<PlanningMeal>()
+            .HasOne<Planning>().WithMany()
+            .HasForeignKey(pm => pm.PlanningId)
+            .OnDelete(DeleteBehavior.Cascade);
+        // Les repas ne sont jamais supprimés physiquement (soft delete) : Restrict suffit.
+        mb.Entity<PlanningMeal>()
+            .HasOne<Meal>().WithMany()
+            .HasForeignKey(pm => pm.MealId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

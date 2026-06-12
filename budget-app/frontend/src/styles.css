@@ -101,16 +101,6 @@ app-top-nav {
   max-width: 1180px;
 }
 
-/* ---------- Placeholder « bientôt disponible » ---------- */
-
-.coming-soon {
-  display: block;
-  max-width: 480px;
-  margin: 3rem auto;
-  text-align: center;
-}
-.coming-soon-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-
 /* ---------- Cartes / grilles ---------- */
 
 .card {

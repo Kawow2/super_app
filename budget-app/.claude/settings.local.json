@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "PowerShell(Get-ChildItem C:\\\\code\\\\budget_final\\\\_tmp_planplate\\\\back -Recurse -Directory | Select-Object -ExpandProperty FullName; \"\"; Get-ChildItem C:\\\\code\\\\budget_final\\\\_tmp_planplate\\\\front -Directory | Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem C:\\\\code\\\\budget_final\\\\_tmp_planplate\\\\back\\\\src -Recurse -File | Select-Object -ExpandProperty FullName; \"\"; Get-ChildItem C:\\\\code\\\\budget_final\\\\_tmp_planplate\\\\front\\\\src -Recurse -File | Select-Object -ExpandProperty FullName)"
     ]
   }
 }

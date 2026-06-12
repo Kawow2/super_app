@@ -29,8 +29,10 @@ using (var scope = app.Services.CreateScope())
         try
         {
             db.Database.EnsureCreated();
-            Seed.Run(db);
             HousingSchema.EnsureTables(db);
+            RecettesSchema.EnsureTables(db);
+            // Seed en dernier : il insère dans des tables créées par les EnsureTables ci-dessus.
+            Seed.Run(db);
             Console.WriteLine("Base de données prête.");
             break;
         }
