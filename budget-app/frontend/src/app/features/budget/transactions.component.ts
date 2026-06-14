@@ -58,7 +58,7 @@ import { TransactionFormComponent } from './transaction-form.component';
         <div class="empty">Aucune transaction. Modifiez les filtres ou importez un relevé.</div>
       } @else {
         <p class="muted" style="margin-top: 0;">{{ filtered().length }} transaction(s)</p>
-        <p-table [value]="filtered()" dataKey="id">
+        <p-table [value]="filtered()" dataKey="id" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Date</th>
@@ -71,18 +71,18 @@ import { TransactionFormComponent } from './transaction-form.component';
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
             <tr>
-              <td>{{ transaction.date | date:'dd/MM/yyyy' }}</td>
-              <td>{{ transaction.label }}</td>
-              <td class="muted">{{ accountName(transaction.accountId) }}</td>
-              <td>
+              <td data-label="Date">{{ transaction.date | date:'dd/MM/yyyy' }}</td>
+              <td data-label="Libellé">{{ transaction.label }}</td>
+              <td class="muted" data-label="Compte">{{ accountName(transaction.accountId) }}</td>
+              <td data-label="Catégorie">
                 <p-select [options]="categoryOptions()" optionLabel="name" optionValue="id"
                           [ngModel]="transaction.categoryId"
                           (ngModelChange)="setCategory(transaction, $event)" />
               </td>
-              <td class="amount" [class.neg]="transaction.amount < 0" [class.pos]="transaction.amount > 0">
+              <td class="amount" data-label="Montant" [class.neg]="transaction.amount < 0" [class.pos]="transaction.amount > 0">
                 {{ transaction.amount | currency:'EUR' }}
               </td>
-              <td><p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(transaction)" /></td>
+              <td data-label=""><p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(transaction)" /></td>
             </tr>
           </ng-template>
         </p-table>

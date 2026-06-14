@@ -44,6 +44,7 @@ import { toIsoDate } from '../../core/date-utils';
       @if (prepayments().length === 0) {
         <div class="empty">Aucun remboursement anticipé. Simulez-en un pour voir les intérêts économisés.</div>
       } @else {
+        <div class="table-scroll">
         <p-table [value]="prepayments()" dataKey="id">
           <ng-template pTemplate="header">
             <tr>
@@ -64,6 +65,7 @@ import { toIsoDate } from '../../core/date-utils';
             </tr>
           </ng-template>
         </p-table>
+        </div>
       }
     </div>
   `,

@@ -43,7 +43,7 @@ import { Category } from '../../core/models';
       @if (categoriesService.categories().length === 0) {
         <div class="empty">Aucune catégorie.</div>
       } @else {
-        <p-table [value]="categoriesService.categories()" dataKey="id">
+        <p-table [value]="categoriesService.categories()" dataKey="id" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Couleur</th>
@@ -54,10 +54,10 @@ import { Category } from '../../core/models';
           </ng-template>
           <ng-template pTemplate="body" let-category>
             <tr>
-              <td><p-colorpicker [ngModel]="category.color" (ngModelChange)="category.color = toHex($event)" /></td>
-              <td><input pInputText type="text" [ngModel]="category.name" (ngModelChange)="category.name = $event" /></td>
-              <td><input pInputText type="text" [ngModel]="category.keywords ?? ''" (ngModelChange)="category.keywords = $event" style="width: 100%;" /></td>
-              <td style="white-space: nowrap;">
+              <td data-label="Couleur"><p-colorpicker [ngModel]="category.color" (ngModelChange)="category.color = toHex($event)" /></td>
+              <td data-label="Nom"><input pInputText type="text" [ngModel]="category.name" (ngModelChange)="category.name = $event" /></td>
+              <td data-label="Mots-clés"><input pInputText type="text" [ngModel]="category.keywords ?? ''" (ngModelChange)="category.keywords = $event" style="width: 100%;" /></td>
+              <td data-label="" style="white-space: nowrap;">
                 <p-button label="Enregistrer" size="small" [outlined]="true" (onClick)="save(category)" />
                 <p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(category)" />
               </td>

@@ -28,7 +28,7 @@ import { Meal, MEAL_TYPE_LABELS, MealType } from '../../core/recettes.models';
       @if (recettes.meals().length === 0) {
         <div class="empty">Aucun repas. Créez votre premier repas pour planifier la semaine.</div>
       } @else {
-        <p-table [value]="recettes.meals()" dataKey="id">
+        <p-table [value]="recettes.meals()" dataKey="id" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Nom</th>
@@ -40,16 +40,16 @@ import { Meal, MEAL_TYPE_LABELS, MealType } from '../../core/recettes.models';
           </ng-template>
           <ng-template pTemplate="body" let-meal>
             <tr>
-              <td>
+              <td data-label="Nom">
                 <strong>{{ meal.name }}</strong>
                 @if (meal.description) {
                   <div class="muted">{{ meal.description }}</div>
                 }
               </td>
-              <td><p-tag [value]="typeLabel(meal.type)" [severity]="typeSeverity(meal.type)" /></td>
-              <td style="white-space: nowrap;"><i class="pi pi-clock muted"></i> {{ meal.timeToCook }} min</td>
-              <td class="muted">{{ ingredientsSummary(meal) }}</td>
-              <td style="white-space: nowrap; text-align: right;">
+              <td data-label="Type"><p-tag [value]="typeLabel(meal.type)" [severity]="typeSeverity(meal.type)" /></td>
+              <td data-label="Temps" style="white-space: nowrap;"><i class="pi pi-clock muted"></i> {{ meal.timeToCook }} min</td>
+              <td class="muted" data-label="Ingrédients">{{ ingredientsSummary(meal) }}</td>
+              <td data-label="" style="white-space: nowrap; text-align: right;">
                 <p-button label="Modifier" size="small" [outlined]="true" [routerLink]="['/recettes/repas', meal.id]" />
                 <p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(meal)" />
               </td>

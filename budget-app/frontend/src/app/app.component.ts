@@ -16,6 +16,11 @@ import { SettingsService } from './core/services';
         <a routerLink="/recettes" routerLinkActive="active"><span class="icon">🍳</span>Recettes</a>
       </nav>
       <router-outlet />
+      <nav class="bottom-nav">
+        <a routerLink="/budget" routerLinkActive="active"><span class="icon">💰</span><span>Budget</span></a>
+        <a routerLink="/immobilier" routerLinkActive="active"><span class="icon">🏠</span><span>Immo</span></a>
+        <a routerLink="/recettes" routerLinkActive="active"><span class="icon">🍳</span><span>Recettes</span></a>
+      </nav>
     </div>
   `,
 })

@@ -61,6 +61,7 @@ import { ImportResult } from '../../core/models';
           <p-tag severity="success" value="{{ result.newRows }} nouvelle(s)" />&nbsp;
           <p-tag severity="danger" value="{{ result.duplicates }} doublon(s)" />
         </p>
+        <div class="table-scroll">
         <p-table [value]="result.rows">
           <ng-template pTemplate="header">
             <tr>
@@ -95,6 +96,7 @@ import { ImportResult } from '../../core/models';
             </tr>
           </ng-template>
         </p-table>
+        </div>
       </div>
     }
   `,

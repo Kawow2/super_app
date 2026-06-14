@@ -9,5 +9,8 @@
       "PowerShell(dotnet run *)",
       "PowerShell(Stop-Process *)"
     ]
+  },
+  "enabledPlugins": {
+    "fableplan@fableplan": false
   }
 }

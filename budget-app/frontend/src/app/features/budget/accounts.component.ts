@@ -40,7 +40,7 @@ import { Account } from '../../core/models';
       @if (accountsService.accounts().length === 0) {
         <div class="empty">Aucun compte.</div>
       } @else {
-        <p-table [value]="accountsService.accounts()" dataKey="id">
+        <p-table [value]="accountsService.accounts()" dataKey="id" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Nom</th>
@@ -53,17 +53,17 @@ import { Account } from '../../core/models';
           </ng-template>
           <ng-template pTemplate="body" let-account>
             <tr>
-              <td><input pInputText type="text" [ngModel]="account.name" (ngModelChange)="account.name = $event" /></td>
-              <td><input pInputText type="text" [ngModel]="account.bank ?? ''" (ngModelChange)="account.bank = $event" /></td>
-              <td class="amount">
+              <td data-label="Nom"><input pInputText type="text" [ngModel]="account.name" (ngModelChange)="account.name = $event" /></td>
+              <td data-label="Banque"><input pInputText type="text" [ngModel]="account.bank ?? ''" (ngModelChange)="account.bank = $event" /></td>
+              <td class="amount" data-label="Solde initial">
                 <p-inputnumber mode="currency" currency="EUR" locale="fr-FR"
                                [ngModel]="account.initialBalance"
                                (ngModelChange)="account.initialBalance = $event ?? 0"
                                inputStyleClass="amount-input" />
               </td>
-              <td class="amount" [class.neg]="account.balance < 0">{{ account.balance | currency:'EUR' }}</td>
-              <td class="muted">{{ account.transactionCount }}</td>
-              <td style="white-space: nowrap;">
+              <td class="amount" data-label="Solde actuel" [class.neg]="account.balance < 0">{{ account.balance | currency:'EUR' }}</td>
+              <td class="muted" data-label="Transactions">{{ account.transactionCount }}</td>
+              <td data-label="" style="white-space: nowrap;">
                 <p-button label="Enregistrer" size="small" [outlined]="true" (onClick)="save(account)" />
                 <p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(account)" />
               </td>

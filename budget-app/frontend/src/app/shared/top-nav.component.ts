@@ -18,7 +18,7 @@ export interface NavLink {
   imports: [TabsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <p-tabs [value]="currentPath()" class="topnav">
+    <p-tabs [value]="currentPath()" class="topnav" [scrollable]="true">
       <p-tablist>
         @for (link of links(); track link.path) {
           <p-tab [value]="link.path" [routerLink]="link.path">{{ link.label }}</p-tab>

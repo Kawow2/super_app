@@ -12,6 +12,7 @@ import { ScheduleEntry } from '../../core/housing.models';
   template: `
     <div class="card">
       <h2>Tableau d'amortissement</h2>
+      <div class="table-scroll">
       <p-table [value]="schedule()" [paginator]="schedule().length > 12" [rows]="12"
                [showCurrentPageReport]="true"
                currentPageReportTemplate="échéances {first} à {last} sur {totalRecords}">
@@ -42,6 +43,7 @@ import { ScheduleEntry } from '../../core/housing.models';
           </tr>
         </ng-template>
       </p-table>
+      </div>
     </div>
   `,
 })

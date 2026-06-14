@@ -238,3 +238,112 @@ a.p-button { text-decoration: none; }
   cursor: pointer;
 }
 .swatch.selected { border-color: var(--text); }
+
+/* ---------- Conteneur scrollable pour tableaux denses ---------- */
+
+/* Pour les tableaux numériques larges (échéanciers, éditeurs) : on garde les
+   colonnes et on permet le défilement horizontal au doigt sur mobile. */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ============================================================
+   Responsive — mobile / tablette portrait (≤ 768px)
+   ============================================================ */
+
+/* La barre de navigation basse n'apparaît que sur mobile. */
+.bottom-nav { display: none; }
+
+@media (max-width: 768px) {
+  /* La sidebar laisse place à la barre du bas. */
+  .sidebar { display: none; }
+
+  /* Barre d'onglets fixée en bas, façon iOS, avec respect de la safe-area. */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.5rem 0.25rem;
+    min-height: 52px;
+    justify-content: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .bottom-nav a .icon { font-size: 1.25rem; line-height: 1; }
+  .bottom-nav a.active { color: var(--accent); }
+
+  /* Contenu : moins de padding, pleine largeur, et de la place pour la barre. */
+  .content {
+    padding: 1rem 1rem;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    max-width: 100%;
+  }
+
+  h1 { font-size: 1.35rem; }
+
+  .card { padding: 0.9rem 1rem; }
+
+  /* Deux cartes de stats par ligne plutôt qu'une seule trop large. */
+  .cards-row { grid-template-columns: 1fr 1fr; }
+
+  /* Les onglets de sous-app défilent horizontalement. */
+  .topnav .p-tablist { padding: 0 1rem; }
+
+  /* Calendrier : cases plus compactes pour rester lisibles. */
+  .calendar { gap: 2px; }
+  .calendar .day { min-height: 56px; font-size: 0.72rem; padding: 0.2rem 0.25rem; }
+  .calendar .chip { font-size: 0.66rem; padding: 0.1rem 0.25rem; }
+
+  /* -------- Tableaux « fiche » → cartes empilées --------
+     Chaque <td> doit porter un attribut data-label pour son intitulé. */
+  .cards-table table,
+  .cards-table thead,
+  .cards-table tbody,
+  .cards-table tr,
+  .cards-table td { display: block; }
+
+  .cards-table thead { display: none; }
+
+  .cards-table tr {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  /* PrimeNG ajoute ses propres bordures de ligne : on les neutralise. */
+  .cards-table tr:last-child td { border-bottom: none; }
+
+  .cards-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    border: none;
+    padding: 0.3rem 0;
+    text-align: right;
+  }
+  .cards-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+  }
+  /* Cellule sans libellé (actions) : prend toute la largeur, alignée à droite. */
+  .cards-table td[data-label=""]::before { content: none; }
+}

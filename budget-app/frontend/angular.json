@@ -17,7 +17,10 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.css"],
-            "assets": []
+            "assets": [
+              "src/manifest.webmanifest",
+              { "glob": "**/*", "input": "src/assets", "output": "assets" }
+            ]
           },
           "configurations": {
             "production": {
@@ -25,7 +28,8 @@
                 { "type": "initial", "maximumWarning": "2mb", "maximumError": "6mb" },
                 { "type": "anyComponentStyle", "maximumWarning": "20kb", "maximumError": "100kb" }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -44,5 +48,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "1a14b325-4f1d-4f71-9966-7a04b421293d"
   }
 }

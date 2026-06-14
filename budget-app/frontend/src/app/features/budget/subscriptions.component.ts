@@ -37,7 +37,7 @@ import { SubscriptionCalendarComponent } from './subscription-calendar.component
           Dépenses revenant chaque mois à montant et date réguliers.
           Ajoutez-les au calendrier en un clic, ou ignorez-les.
         </p>
-        <p-table [value]="suggestions()">
+        <p-table [value]="suggestions()" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Libellé</th>
@@ -49,11 +49,11 @@ import { SubscriptionCalendarComponent } from './subscription-calendar.component
           </ng-template>
           <ng-template pTemplate="body" let-suggestion>
             <tr>
-              <td>{{ suggestion.label }}</td>
-              <td>le {{ suggestion.dayOfMonth }}</td>
-              <td class="muted">{{ suggestion.months }} mois</td>
-              <td class="amount neg">{{ suggestion.amount | currency:'EUR' }}</td>
-              <td style="white-space: nowrap;">
+              <td data-label="Libellé">{{ suggestion.label }}</td>
+              <td data-label="Jour estimé">le {{ suggestion.dayOfMonth }}</td>
+              <td class="muted" data-label="Observé sur">{{ suggestion.months }} mois</td>
+              <td class="amount neg" data-label="Montant">{{ suggestion.amount | currency:'EUR' }}</td>
+              <td data-label="" style="white-space: nowrap;">
                 <p-button label="Ajouter" size="small" (onClick)="acceptSuggestion(suggestion)" />
                 <p-button label="Ignorer" size="small" [text]="true" (onClick)="dismissSuggestion(suggestion)" />
               </td>
@@ -101,7 +101,7 @@ import { SubscriptionCalendarComponent } from './subscription-calendar.component
           @if (subscriptionsService.subscriptions().length === 0) {
             <div class="empty">Aucun abonnement pour l'instant.</div>
           } @else {
-            <p-table [value]="subscriptionsService.subscriptions()" dataKey="id">
+            <p-table [value]="subscriptionsService.subscriptions()" dataKey="id" styleClass="cards-table">
               <ng-template pTemplate="header">
                 <tr>
                   <th>Libellé</th>
@@ -113,14 +113,14 @@ import { SubscriptionCalendarComponent } from './subscription-calendar.component
               </ng-template>
               <ng-template pTemplate="body" let-subscription>
                 <tr [style.opacity]="subscription.active ? 1 : 0.45">
-                  <td>{{ subscription.label }}</td>
-                  <td>le {{ subscription.dayOfMonth }}</td>
-                  <td class="amount neg">{{ subscription.amount | currency:'EUR' }}</td>
-                  <td>
+                  <td data-label="Libellé">{{ subscription.label }}</td>
+                  <td data-label="Jour">le {{ subscription.dayOfMonth }}</td>
+                  <td class="amount neg" data-label="Montant">{{ subscription.amount | currency:'EUR' }}</td>
+                  <td data-label="Actif">
                     <p-checkbox [binary]="true" [ngModel]="subscription.active"
                                 (ngModelChange)="toggleActive(subscription, $event)" />
                   </td>
-                  <td><p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(subscription)" /></td>
+                  <td data-label=""><p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(subscription)" /></td>
                 </tr>
               </ng-template>
             </p-table>

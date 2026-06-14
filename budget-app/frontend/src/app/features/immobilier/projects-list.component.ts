@@ -38,7 +38,7 @@ import { HousingProjectListItem } from '../../core/housing.models';
       @if (housing.projects().length === 0) {
         <div class="empty">Aucun projet pour l'instant. Créez votre premier projet ci-dessus.</div>
       } @else {
-        <p-table [value]="housing.projects()" dataKey="id">
+        <p-table [value]="housing.projects()" dataKey="id" styleClass="cards-table">
           <ng-template pTemplate="header">
             <tr>
               <th>Nom</th>
@@ -51,15 +51,15 @@ import { HousingProjectListItem } from '../../core/housing.models';
           </ng-template>
           <ng-template pTemplate="body" let-project>
             <tr>
-              <td>
+              <td data-label="Nom">
                 <a [routerLink]="['projets', project.id]" class="project-link">{{ project.name }}</a>
                 @if (project.notes) {<div class="muted" style="font-size: 0.8rem;">{{ project.notes }}</div>}
               </td>
-              <td class="muted">{{ project.loanCount }}</td>
-              <td class="amount">{{ project.totalBorrowed | currency:'EUR' }}</td>
-              <td class="amount">{{ project.monthlyPayment | currency:'EUR' }}<span class="muted"> /mois</span></td>
-              <td class="amount">{{ project.finalPrice | currency:'EUR' }}</td>
-              <td style="white-space: nowrap; text-align: right;">
+              <td class="muted" data-label="Prêts">{{ project.loanCount }}</td>
+              <td class="amount" data-label="Emprunté">{{ project.totalBorrowed | currency:'EUR' }}</td>
+              <td class="amount" data-label="Mensualité">{{ project.monthlyPayment | currency:'EUR' }}<span class="muted"> /mois</span></td>
+              <td class="amount" data-label="Prix final estimé">{{ project.finalPrice | currency:'EUR' }}</td>
+              <td data-label="" style="white-space: nowrap; text-align: right;">
                 <p-button label="Ouvrir" size="small" [outlined]="true" [routerLink]="['projets', project.id]" />
                 <p-button label="Supprimer" size="small" severity="danger" [text]="true" (onClick)="remove(project)" />
               </td>

@@ -21,6 +21,7 @@ interface CompareRow {
     <div class="card">
       <h2>Comparaison des scénarios</h2>
       <p class="muted">Les scénarios sont exclus des totaux du projet. Delta négatif = scénario moins cher.</p>
+      <div class="table-scroll">
       <p-table [value]="rows()">
         <ng-template pTemplate="header">
           <tr>
@@ -63,6 +64,7 @@ interface CompareRow {
           </tr>
         </ng-template>
       </p-table>
+      </div>
     </div>
   `,
 })

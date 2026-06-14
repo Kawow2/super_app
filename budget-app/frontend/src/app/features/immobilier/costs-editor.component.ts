@@ -33,6 +33,7 @@ import { ProjectCost } from '../../core/housing.models';
       @if (costs().length === 0) {
         <div class="empty">Aucun frais fixe.</div>
       } @else {
+        <div class="table-scroll">
         <p-table [value]="costs()" dataKey="id">
           <ng-template pTemplate="header">
             <tr>
@@ -56,6 +57,7 @@ import { ProjectCost } from '../../core/housing.models';
             </tr>
           </ng-template>
         </p-table>
+        </div>
       }
     </div>
   `,
